@@ -1,0 +1,19 @@
+spring:
+ datasource:
+  username: root
+  password: 123456
+  url: jdbc:mysql://localhost:3308/attendance?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+  driver-class-name: com.mysql.jdbc.Driver
+
+
+mybatis:
+ type-aliases-package: com.wu.pojo
+ mapper-locations: classpath:mybatis/mapper/*.xml
+ configuration:
+  map-underscore-to-camel-case: true
+
+pagehelper:
+ helper-dialect: mysql
+ params: count=countsql
+ reasonable: true
+ support-methods-arguments: true

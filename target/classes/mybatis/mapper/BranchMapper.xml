@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="com.wu.mapper.BranchMapper">
+    <select id="queryBranchList" resultType="Branch">
+        select * from branch
+    </select>
+
+    <select id="queryBranchById" resultMap="BranchStaff">
+        select *
+          from branch b
+          left join staff s on b.branch_id = s.sbranch_id
+          where  b.branch_id = #{branchId}
+    </select>
+    <resultMap id="BranchStaff" type="Branch">
+        <result property="branchId" column="branch_id"/>
+        <result property="branchName" column="branch_name"/>
+        <collection property="staffs" ofType="Staff">
+            <result property="staffId" column="staff_id"/>
+            <result property="staffName" column="staff_name"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="queryBranchListWithStaff" resultMap="BranchListStaff">
+          select *
+          from branch b
+          left join staff s on b.branch_id = s.sbranch_id
+    </select>
+    <resultMap id="BranchListStaff" type="Branch">
+        <result property="branchId" column="branch_id"/>
+        <result property="branchName" column="branch_name"/>
+        <result property="parentId" column="parent_id"/>
+        <collection property="staffs" ofType="Staff">
+            <result property="staffId" column="staff_id"/>
+            <result property="staffName" column="staff_name"/>
+        </collection>
+    </resultMap>
+
+</mapper>

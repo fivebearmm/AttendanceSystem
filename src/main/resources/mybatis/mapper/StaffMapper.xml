@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="com.wu.mapper.StaffMapper">
+    <select id="queryStaffList" resultType="Staff">
+        select * from staff
+    </select>
+
+    <select id="getStaff" resultType="Staff">
+        select * from staff
+        where user_name = #{userName} and password = #{password}
+    </select>
+
+    <select id="queryStaffListByTitle" resultType="Staff">
+        select staff_id
+        from staff
+        where staff_title = #{staffTitle}
+    </select>
+
+    <select id="queryStaffById" resultType="Staff">
+        select * from staff
+        where staff_id = #{staffId};
+    </select>
+
+    <select id="queryStaffListByBranchId" resultType="Staff">
+        select * from staff
+        where sbranch_id = #{sbranchId};
+    </select>
+
+    <insert id="addStaff" parameterType="Staff">
+        insert
+        into staff
+            (staff_name,user_name,password,staff_title,staff_phone,staff_manager,staff_hr,sbranch_id)
+    values  (#{staffName},#{userName},#{password},#{staffTitle},#{staffPhone},#{staffManager},#{staffHr},#{sbranchId})
+    </insert>
+
+    <update id="updateStaff" parameterType="Staff">
+        update staff
+        set staff_name = #{staffName},user_name = #{userName},
+        password = #{password},staff_title = #{staffTitle},
+        staff_phone = #{staffPhone},staff_manager = #{staffManager},staff_hr = #{staffHr},sbranch_id = #{sbranchId}
+        where staff_id = #{staffId}
+    </update>
+
+    <delete id="deleteStaffById" parameterType="int">
+            delete
+            from staff
+            where staff_id = #{staffId}
+    </delete>
+</mapper>

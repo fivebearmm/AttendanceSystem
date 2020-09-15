@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="com.wu.mapper.LeaveMapper">
+    
+    <select id="queryLeaveByStaffIds" parameterType="map" resultMap="LeaveStaff">
+        select m.*,s.*,b.*
+        from MyLeave as m
+        left join staff as s
+        on  m.lstaff_id = s.staff_id
+        left join branch as b
+        on s.sbranch_id = b.branch_id
+        <where>
+            <if test="leaveStart != null">
+                (leave_start > #{leaveStart}) and (#{leaveEnd} > leave_end)
+            </if>
+            <foreach collection="lstaffIds" item="lstaffId" open="and (" close=")" separator="or">
+
+                   lstaff_id = #{lstaffId}
+
+            </foreach>
+
+        </where>
+
+    </select>
+    <resultMap id="LeaveStaff" type="MyLeave">
+        <result property="leaveId" column="leave_id"/>
+        <result property="lstaffId" column="lstaff_id"/>
+        <result property="leaveType" column="leave_type"/>
+        <result property="leaveStart" column="leave_start"/>
+        <result property="leaveEnd" column="leave_end"/>
+        <association property="staff" javaType="Staff">
+            <result property="staffId" column="staff_id"/>
+            <result property="sbranchId" column="sbranch_id"/>
+            <result property="staffName" column="staff_name"/>
+        </association>
+        <association property="branch" column="Branch">
+            <result property="branchId" column="branch_id"/>
+            <result property="branchName" column="branch_name"/>
+        </association>
+    </resultMap>
+
+    <select id="queryLeaveByStaffId" resultType="MyLeave">
+        select *
+        from myleave
+        where (leave_start > #{leaveStart}) and (#{leaveEnd} > leave_end) and lstaff_id = #{staffId}
+    </select>
+
+    <insert id="addLeave" parameterType="MyLeave">
+
+        insert
+        into myleave
+         (lattendance_id,lstaff_id,leave_type,leave_start,leave_end,leave_reason)
+         values (#{lattendanceId},#{lstaffId},#{leaveType},#{leaveStart},#{leaveEnd},#{leaveReason})
+    </insert>
+
+    <select id="queryLeaveByAttendanceId" resultType="MyLeave">
+         SELECT *
+         FROM myleave
+         WHERE lattendance_id = #{lattendanceId};
+    </select>
+    
+</mapper>

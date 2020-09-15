@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wu.mapper.AttendanceMapper">
+
+    <select id="getAttendance" resultMap="AttendanceLeave">
+        select a.attendance_id,a.attendance_start,a.attendance_end,l.leave_id,l.leave_type,l.leave_start,l.leave_end
+        from myattendance a,myleave l
+        where  l.lattendance_id = a.attendance_id and a.attendance_id = #{attendanceId}
+    </select>
+    <resultMap id="AttendanceLeave" type="MyAttendance">
+        <result property="attendanceId" column="attendance_id"/>
+        <result property="attendanceStart" column="attendance_start"/>
+        <result property="attendanceEnd" column="attendance_end"/>
+        <collection property="leaves" ofType="MyLeave">
+            <result property="leaveId" column="leave_id"/>
+            <result property="leaveType" column="leave_type"/>
+            <result property="leaveStart" column="leave_start"/>
+            <result property="leaveEnd" column="leave_end"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryAttendanceByStaffId" resultMap="AttendanceListLeave">
+        select *
+        from myattendance
+        left join myleave
+        on myleave.lattendance_id = myattendance.attendance_id
+        where (myattendance.attendance_start > #{attendanceStart}) and (#{attendanceEnd} > myattendance.attendance_end) and myattendance.astaff_id = #{staffId};
+
+    </select>
+    <resultMap id="AttendanceListLeave" type="MyAttendance">
+        <result property="attendanceId" column="attendance_id"/>
+        <result property="astaffId" column="astaff_Id"/>
+        <result property="attendanceStart" column="attendance_start"/>
+        <result property="attendanceEnd" column="attendance_end"/>
+        <collection property="leaves" ofType="MyLeave">
+            <result property="leaveId" column="leave_id"/>
+            <result property="lstaffId" column="lstaff_id"/>
+            <result property="leaveType" column="leave_type"/>
+            <result property="leaveStart" column="leave_start"/>
+            <result property="leaveEnd" column="leave_end"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryAttendanceByStaffIds" parameterType="map" resultMap="AttendanceListLeave2">
+        select m.*,s.*,b.*
+        from myattendance as m
+        left join staff as s
+        on  m.astaff_id = s.staff_id
+        left join branch as b
+        on s.sbranch_id = b.branch_id
+        <where>
+            <if test="attendanceStart != null">
+                (attendance_start > #{attendanceStart}) and (#{attendanceEnd} > attendance_end)
+            </if>
+            <foreach collection="astaffIds" item="astaffId" open="and (" close=")" separator="or">
+
+                astaff_id = #{astaffId}
+
+            </foreach>
+
+        </where>
+    </select>
+    <resultMap id="AttendanceListLeave2" type="MyAttendance">
+        <result property="attendanceId" column="attendance_id"/>
+        <result property="astaffId" column="astaff_Id"/>
+        <result property="attendanceStart" column="attendance_start"/>
+        <result property="attendanceEnd" column="attendance_end"/>
+        <association property="staff" javaType="Staff">
+            <result property="staffId" column="staff_id"/>
+            <result property="sbranchId" column="sbranch_id"/>
+            <result property="staffName" column="staff_name"/>
+        </association>
+        <association property="branch" column="Branch">
+            <result property="branchId" column="branch_id"/>
+            <result property="branchName" column="branch_name"/>
+        </association>
+        <collection property="leaves" ofType="MyLeave">
+            <result property="leaveId" column="leave_id"/>
+            <result property="lstaffId" column="lstaff_id"/>
+            <result property="leaveType" column="leave_type"/>
+            <result property="leaveStart" column="leave_start"/>
+            <result property="leaveEnd" column="leave_end"/>
+        </collection>
+    </resultMap>
+
+    <insert id="addAttendance" parameterType="MyAttendance">
+        insert
+        into myattendance
+        (attendance_id,astaff_id,attendance_start,attendance_end,attendance_type)
+        values (#{attendanceId},#{astaffId},#{attendanceStart},#{attendanceEnd},#{attendanceType})
+    </insert>
+
+</mapper>
