@@ -25,7 +25,6 @@
         </collection>
     </resultMap>
 
-
     <select id="queryBranchListWithStaff" resultMap="BranchListStaff">
           select *
           from branch b
@@ -40,5 +39,24 @@
             <result property="staffName" column="staff_name"/>
         </collection>
     </resultMap>
+
+    <insert id="addBranch" parameterType="Branch">
+        insert
+        into branch
+             ( branch_name,parent_id)
+        values  (#{branchName},#{parentId})
+    </insert>
+
+    <update id="updateBranch" parameterType="Branch">
+        update branch
+        set branch_name = #{branchName},parent_id = #{parentId}
+        where branch_id = #{branchId}
+    </update>
+
+    <delete id="deleteBranchById" parameterType="int">
+            delete
+            from branch
+            where branch_id = #{branchId}
+    </delete>
 
 </mapper>

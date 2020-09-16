@@ -11,7 +11,6 @@ import com.wu.pojo.Branch;
 import com.wu.pojo.Staff;
 import com.wu.service.BranchService;
 import com.wu.service.StaffService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
